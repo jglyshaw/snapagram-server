@@ -11,7 +11,10 @@ app.use(express.json())
 app.use(express.urlencoded({extended:false}))
 app.use(express.text())
 app.use('/posts', postRouter)
+app.get('/', (req, res) => {
+    res.send("connected to the server")
+})
 
-mongoose.connect(process.env.DB_CONNECTION)
+mongoose.connect("mongodb+srv://jglyshaw:J1j2j3j4!@cart.vbdaony.mongodb.net/test")
 
 app.listen(3300)
