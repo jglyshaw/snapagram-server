@@ -17,4 +17,4 @@ app.get('/', (req, res) => {
 
 mongoose.connect("mongodb+srv://jglyshaw:J1j2j3j4!@cart.vbdaony.mongodb.net/test")
 
-app.listen(3300)
+app.listen(process.env.PORT || port)
