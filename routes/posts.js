@@ -1,12 +1,12 @@
 import express from 'express';
-import CartModel from '../models/cart.js';
+import PostModel from '../models/posts.js';
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const carts = await CartModel.find();
-        res.status(200).json(carts);
+        const posts = await PostModel.find();
+        res.status(200).json(posts);
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -14,8 +14,8 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const cart = await CartModel.findById(req.params.id);
-        res.status(200).json(cart);
+        const post = await PostModel.findById(req.params.id);
+        res.status(200).json(post);
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -23,19 +23,19 @@ router.get('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const cart = await CartModel.findByIdAndDelete(req.params.id);
-        res.status(200).json(cart);
+        const post = await PostModel.findByIdAndDelete(req.params.id);
+        res.status(200).json(post);
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
 });
 
 router.post('/', async (req, res) => {
-    const { totalPrice, items, pizza } = req.body;
-    const newCart = new CartModel({ totalPrice, items })
+    const { title, description, tags, likes } = req.body;
+    const newPost = new PostModel({ title, description, tags, likes })
     try {
-        await newCart.save();
-        res.status(201).json(newCart);
+        await newPost.save();
+        res.status(201).json(newPost);
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
