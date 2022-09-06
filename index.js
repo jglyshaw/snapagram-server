@@ -17,6 +17,9 @@ app.get('/', (req, res) => {
     res.send("connected to the server")
 })
 
+app.get('/hello', (req, res) => {
+    res.send("connected to the server and says hello")
+})
 mongoose.connect("mongodb+srv://jglyshaw:J1j2j3j4!@cart.vbdaony.mongodb.net/test")
 
 app.listen(process.env.PORT || port)
