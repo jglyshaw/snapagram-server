@@ -4,6 +4,8 @@ import cors from 'cors';
 import postRouter from './routes/posts.js'
 import 'dotenv/config'
 
+const port = 3300;
+
 const app = express()
 
 app.use(cors())
