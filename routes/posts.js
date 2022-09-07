@@ -32,7 +32,7 @@ router.delete('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const { title, description, tags, creator } = req.body;
-    const newPost = new PostModel({ title, description, tags, creator })
+    const newPost = new PostModel({ title, description, tags, creator, image })
     try {
         await newPost.save();
         res.status(201).json(newPost);
@@ -45,7 +45,7 @@ router.get('/stupid/:id', async (req, res) => {
     res.send(req.params.id);
 })
 
-router.post('/like/:id', async (req, res) => {
+router.patch('/like/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const post = await PostModel.findById(id);
@@ -54,15 +54,13 @@ router.post('/like/:id', async (req, res) => {
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
-
-  
 })
 
 router.patch('/edit/:id', async (req, res) => {
     const { id } = req.params;
-    const { title, description, tags, creator } = req.body;
+    const { title, description, tags, creator, image } = req.body;
     try {
-        const updatedPost = await PostModel.findByIdAndUpdate(id, { title, description, tags, creator }, { new: true });
+        const updatedPost = await PostModel.findByIdAndUpdate(id, { title, description, tags, creator, image }, { new: true });
         res.json(updatedPost);
     } catch (error) {
         res.status(409).json({ message: error.message });
