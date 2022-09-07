@@ -47,16 +47,26 @@ router.get('/stupid/:id', async (req, res) => {
 
 router.post('/like/:id', async (req, res) => {
     const { id } = req.params;
-    const post = await PostModel.findById(id);
-    const updatedPost = await PostModel.findByIdAndUpdate(id, { likes: post.likes + 1 }, { new: true });
-    res.json(updatedPost);
+    try {
+        const post = await PostModel.findById(id);
+        const updatedPost = await PostModel.findByIdAndUpdate(id, { likes: post.likes + 1 }, { new: true });
+        res.json(updatedPost);
+    } catch (error) {
+        res.status(409).json({ message: error.message });
+    }
+
+  
 })
 
 router.patch('/edit/:id', async (req, res) => {
     const { id } = req.params;
     const { title, description, tags, creator } = req.body;
-    const updatedPost = await PostModel.findByIdAndUpdate(id, { title, description, tags, creator }, { new: true });
-    res.json(updatedPost);
+    try {
+        const updatedPost = await PostModel.findByIdAndUpdate(id, { title, description, tags, creator }, { new: true });
+        res.json(updatedPost);
+    } catch (error) {
+        res.status(409).json({ message: error.message });
+    }
 })
 
 export default router;
