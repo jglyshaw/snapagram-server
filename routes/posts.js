@@ -41,7 +41,11 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.patch('/like/:id', async (req, res) => {
+router.get('/stupid/:id', async (req, res) => {
+    res.send(req.params.id);
+})
+
+router.post('/like/:id', async (req, res) => {
     const { id } = req.params;
     const post = await PostModel.findById(id);
     const updatedPost = await PostModel.findByIdAndUpdate(id, { likes: post.likes + 1 }, { new: true });

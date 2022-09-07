@@ -16,6 +16,5 @@ app.get('/', (req, res) => {
     res.send("connected to the server")
 })
 
-
 mongoose.connect(process.env.DB_CONNECTION)
 app.listen(process.env.PORT || port)
