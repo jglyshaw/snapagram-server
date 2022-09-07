@@ -5,7 +5,6 @@ import postRouter from './routes/posts.js'
 import 'dotenv/config'
 
 const port = 3300;
-
 const app = express()
 
 app.use(cors())
@@ -17,9 +16,6 @@ app.get('/', (req, res) => {
     res.send("connected to the server")
 })
 
-app.get('/hello', (req, res) => {
-    res.send("connected to the server and says hello")
-})
-mongoose.connect("mongodb+srv://jglyshaw:J1j2j3j4!@cart.vbdaony.mongodb.net/test")
 
+mongoose.connect(process.env.DB_CONNECTION)
 app.listen(process.env.PORT || port)
