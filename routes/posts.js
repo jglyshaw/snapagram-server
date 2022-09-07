@@ -31,7 +31,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { title, description, tags, creator } = req.body;
+    const { title, description, tags, creator, image } = req.body;
     const newPost = new PostModel({ title, description, tags, creator, image })
     try {
         await newPost.save();
@@ -39,10 +39,6 @@ router.post('/', async (req, res) => {
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
-})
-
-router.get('/stupid/:id', async (req, res) => {
-    res.send(req.params.id);
 })
 
 router.patch('/like/:id', async (req, res) => {
