@@ -41,14 +41,14 @@ router.post('/', async (req, res) => {
     }
 })
 
-router.post('/like/:id', async (req, res) => {
+router.patch('/like/:id', async (req, res) => {
     const { id } = req.params;
     const post = await PostModel.findById(id);
     const updatedPost = await PostModel.findByIdAndUpdate(id, { likes: post.likes + 1 }, { new: true });
     res.json(updatedPost);
 })
 
-router.post('/edit/:id', async (req, res) => {
+router.patch('/edit/:id', async (req, res) => {
     const { id } = req.params;
     const { title, description, tags, creator } = req.body;
     const updatedPost = await PostModel.findByIdAndUpdate(id, { title, description, tags, creator }, { new: true });
