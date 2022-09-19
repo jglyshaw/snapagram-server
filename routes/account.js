@@ -1,37 +1,37 @@
 import express from 'express';
+import bcrypt from "bcryptjs";
+
 import AccountModel from '../models/account.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+
+router.post('/login', async (req, res) => {
+    const { username, password } = req.body;
     try {
-        const accounts = await AccountModel.find();
-        res
-        res.status(200).json(accounts);
+        const oldUser = await AccountModel.findOne({ username });
+        if (!oldUser) return res.status(404).json({ message: "User doesn't exist" });
+        const isPasswordCorrect = await bcrypt.compare(password, oldUser.password);
+        if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid credentials" });
+        res.status(200).json({ result: oldUser });
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.post('/signup', async (req, res) => {
+    const { username, email, password } = req.body;
     try {
-        const account = await AccountModel.findById(req.params.id);
-        res.status(200).json(account);
+        const oldUser = await AccountModel.findOne({ username });
+        const oldUserEmail = await AccountModel.findOne({ email });
+        if (oldUser || oldUserEmail) return res.status(400).json({ message: "User already exists" });
+        const hashedPassword = await bcrypt.hash(password, 12);
+        const result = await AccountModel.create({ email, password: hashedPassword, username: username });
+        res.status(200).json({ result });
+
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
 });
-
-router.post('/', async (req, res) => {
-    const { username, password, email } = req.body;
-    const newAccount = new AccountModel({ username, password, email})
-
-    try {
-        await newAccount.save();
-        res.status(201).json(newAccount);
-    } catch (error) {
-        res.status(409).json({ message: error.message });
-    }
-})
 
 export default router;
