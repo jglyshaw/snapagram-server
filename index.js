@@ -5,7 +5,7 @@ import postRouter from './routes/posts.js'
 import accountRouter from './routes/account.js'
 import 'dotenv/config'
 
-const port = 3300;
+const port = 5000;
 const app = express()
 
 app.use(cors())
