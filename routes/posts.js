@@ -3,31 +3,10 @@ import PostModel from '../models/posts.js';
 
 const router = express.Router();
 
-
-
 router.get('/allposts', async (req, res) => {
     try {
         const posts = await PostModel.find();
         res.status(200).json(posts);
-    } catch (error) {
-        res.status(404).json({ message: error.message });
-    }
-});
-
-router.get('/userposts/:creatorID', async (req, res) => {
-    try {
-        const posts = await PostModel.find({creatorID: req.params.creatorID});
-        res.status(200).json(removeCreatorID(posts));
-    } catch (error) {
-        res.status(404).json({ message: error.message });
-    }
-});
-
-router.delete('/:id', async (req, res) => {
-    try {
-        const post = await PostModel.findById(req.params.id);
-        post.delete()
-        res.status(200).send("deleted successfully");
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
@@ -44,6 +23,26 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.get('/userposts/:creatorID', async (req, res) => {
+    try {
+        const posts = await PostModel.find({creatorID: req.params.creatorID});
+        res.status(200).json(posts);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const post = await PostModel.findById(req.params.id);
+        post.delete()
+        res.status(200).send("deleted successfully");
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+});
+
+
 router.patch('/like/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -57,11 +56,13 @@ router.patch('/like/:id', async (req, res) => {
 
 router.patch('/comment/:id', async (req, res) => {
     const { id } = req.params;
-    const { comment } = req.body;
+    const { text, username } = req.body;
     try {
         const post = await PostModel.findById(id);
-        await PostModel.findByIdAndUpdate(id, { comments: [...post.comments, comment] }, { new: true });
-        res.json("liked successfully");
+        let newComment = {username: username, text: text}
+        post.comments.push(newComment);
+        await PostModel.findByIdAndUpdate(id, post, { new: true });
+        res.json("commented successfully");
     } catch (error) {
         res.status(409).json({ message: error.message });
     }
