@@ -3,23 +3,18 @@ import PostModel from '../models/posts.js';
 
 const router = express.Router();
 
-const removeCreatorID = (posts) => {
-    return posts.map((post) => {
-        return {title: post.title, description: post.description, date: post.date,
-            _id: post.id, image: post.image, username: post.username, tags: post.tags, likes: post.likes, comments: post.comments}
-    })
-}
 
-router.get('/', async (req, res) => {
+
+router.get('/allposts', async (req, res) => {
     try {
         const posts = await PostModel.find();
-        res.status(200).json(removeCreatorID(posts));
+        res.status(200).json(posts);
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
 });
 
-router.get('/:creatorID', async (req, res) => {
+router.get('/userposts/:creatorID', async (req, res) => {
     try {
         const posts = await PostModel.find({creatorID: req.params.creatorID});
         res.status(200).json(removeCreatorID(posts));
@@ -29,13 +24,8 @@ router.get('/:creatorID', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-    const { creatorID } = req.body;
-
     try {
         const post = await PostModel.findById(req.params.id);
-        if(post.creatorID !== creatorID) {
-            return res.status(400).send("you are not authorized to delete this post")
-        }
         post.delete()
         res.status(200).send("deleted successfully");
     } catch (error) {
@@ -65,13 +55,32 @@ router.patch('/like/:id', async (req, res) => {
     }
 })
 
+router.patch('/comment/:id', async (req, res) => {
+    const { id } = req.params;
+    const { comment } = req.body;
+    try {
+        const post = await PostModel.findById(id);
+        await PostModel.findByIdAndUpdate(id, { comments: [...post.comments, comment] }, { new: true });
+        res.json("liked successfully");
+    } catch (error) {
+        res.status(409).json({ message: error.message });
+    }
+})
+
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const post = await PostModel.findById(id);
+        res.json(post);
+    } catch (error) {
+        res.status(409).json({ message: error.message });
+    }
+})
+
 router.patch('/edit/:id', async (req, res) => {
     const { id } = req.params;
     const { title, description, tags, image, creatorID } = req.body;
     try {
-        if(post.creatorID !== creatorID) {
-            return res.status(400).send("you are not authorized to edit this post")
-        }
         const updatedPost = await PostModel.findByIdAndUpdate(id, { title, description, tags, image }, { new: true });
         res.json(updatedPost);
     } catch (error) {

@@ -11,7 +11,7 @@ const postSchema = mongoose.Schema({
         type: Number,
         default: 0,
     },
-    comments: { type: [String], default: [] },
+    comments: { type: [Object], default: [] },
     date: {
         type: Date,
         default: Date.now
